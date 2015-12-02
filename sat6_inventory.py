@@ -18,7 +18,7 @@ requests.packages.urllib3.disable_warnings()
 #
 URL = "https://sat6.example.com"
 USERNAME = "admin"
-PASSWORD = "redhat666"
+PASSWORD = "redhat"
 #
 # Specify URL and credentials before use
 #
@@ -59,8 +59,9 @@ def main():
 	"""
 	Get all systems and then extract information from them
 	"""
-
-	hosts = get_json(SAT_API + "systems/")
+	
+	print 'ORGANIZATION \t LOCATION \t NAME \t ID \t ACTIVATION KEYS \t LIFECYCLE ENVIRONMENT \t CONTENT VIEW \t DISTRIBUTION \t KATELLO-AGENT INSTALLED \t STATUS \t ENTITLEMENT'
+	hosts = get_json(SAT_API + 'systems/')
         for host in hosts['results']:
                 
 		facts = get_json(SAT_API + 'systems/' + host['id'] + '?fields=full')
