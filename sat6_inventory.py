@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+Ture = True
+
 import json
 import sys
 
@@ -18,7 +20,10 @@ requests.packages.urllib3.disable_warnings()
 #
 URL = 'https://sat6.example.com'
 USERNAME = 'admin'
-PASSWORD = 'redhat'
+PASSWORD = 'redhat666'
+# Set this to 'True' to get the output nicely formatted on multiple lines.
+# Set it to 'False' to get each host on one line.
+MULTIPLE_LINES = Ture
 #
 # Specify URL and credentials before use
 #
@@ -55,10 +60,8 @@ def post_json(location, json_data):
 
 	return result.json()
 
-def main():
-	"""
-	Get all systems and then extract information from them
-	"""
+def one_liners():
+
 	print 'This script connects to the API of a Satellite 6 server and prints information about the Content Hosts on that Satellite. The output contains the following infromation (one line per host):'
 	print 'ORGANIZATION   LOCATION   NAME   ID   ACTIVATION KEYS   LIFECYCLE ENVIRONMENT   CONTENT VIEW   DISTRIBUTION   VIRTUAL/PHYSICAL KATELLO-AGENT INSTALLED   STATUS   LAST REPORT   ENTITLEMENT STATUS   ERRATA COUNT: TOTAL(SECURITY, BUGFIX, ENHANCEMENT)   ARCHITECTURE   CPU(S)   TOTAL MEMORY   IPv4 ADDRESS'
 	hosts = get_json(SAT_API + 'systems/')
@@ -106,5 +109,56 @@ def main():
                 print output
 	
 
-if __name__ == '__main__':
-	main()
+def multiple_lines():
+	
+	print 'This script connects to the API of a Satellite 6 server and prints information about the Content Hosts on that Satellite.'
+	hosts = get_json(SAT_API + 'systems/')
+        for host in hosts['results']:
+
+                facts = get_json(SAT_API + 'systems/' + host['id'] + '?fields=full')
+		
+		print facts['name']
+                print '\t Organization: \t\t' + facts['environment']['organization']['name']
+                print '\t Location: \t\t' + facts['location']
+                print '\t ID: \t\t\t' + facts['id']
+		
+		#print '\t : \t' + 
+                
+		output = '\t Activation keys: \t'
+		for ak in facts['activation_keys']:
+                        output += ak['name'] + ' '
+		print output
+                
+                print '\t Environment: \t\t' + facts['environment']['name'] + '\t'
+                print '\t Content View: \t\t' +facts['content_view']['name'] + '\t'
+                print '\t Distribution: \t\t' +facts['distribution'] + '\t'
+                print '\t Virtual/Physical: \t' +facts['type'] + '\t'
+
+                if facts['katello_agent_installed']:
+                        print '\t Katello-Agent: \tInstalled'
+                else:
+                        print '\t Katello-Agent: \tNot installed'
+
+                print '\t Status: \t\t' + facts['host']['status'] + '\t'
+                print '\t Last report: \t\t' + facts['host']['last_report'] + '\t'
+                print '\t Subscription: \t\t' + facts['entitlementStatus'] + '\t'
+
+                print '\t Errata total: \t\t' + str(facts['errata_counts']['total'])
+                print '\t\t Security: \t' + str(facts['errata_counts']['security'])
+                print '\t\t Bugfixes: \t' + str(facts['errata_counts']['bugfix'])
+                print '\t\t Enhancements: \t' + str(facts['errata_counts']['enhancement'])
+
+                print '\t Architecture: \t\t' + facts['facts']['lscpu.architecture'] + '\t'
+                print '\t CPU(s): \t\t' + facts['facts']['cpu.cpu(s)'] + '\t'
+                print '\t Memory: \t\t' + facts['facts']['dmi.memory.size'] + '\t'
+                print '\t IPv4 address: \t\t' + facts['facts']['network.ipv4_address'] + '\t'
+
+                #output += facts[''] + '\t'
+
+                print ''
+
+
+if MULTIPLE_LINES:
+	multiple_lines()
+else:
+	one_liners()
