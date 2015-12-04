@@ -20,7 +20,7 @@ requests.packages.urllib3.disable_warnings()
 #
 URL = 'https://sat6.example.com'
 USERNAME = 'admin'
-PASSWORD = 'redhat666'
+PASSWORD = 'redhat'
 # Set this to 'True' to get the output nicely formatted on multiple lines.
 # Set it to 'False' to get each host on one line.
 MULTIPLE_LINES = Ture
