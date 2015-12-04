@@ -18,7 +18,7 @@ requests.packages.urllib3.disable_warnings()
 #
 URL = 'https://sat6.example.com'
 USERNAME = 'admin'
-PASSWORD = 'redhat666'
+PASSWORD = 'redhat'
 #
 # Specify URL and credentials before use
 #
