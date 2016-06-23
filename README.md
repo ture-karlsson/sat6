@@ -1,4 +1,4 @@
-# sat6
+# sat6_inventory
 
 ## sat6_inventory.py
 
